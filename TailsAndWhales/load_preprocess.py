@@ -46,6 +46,9 @@ def create_X_y(number_of_photos):
         if len(img.shape) != 3:
             list_index_bw.append(index)
             list_len.append(len(img.shape))
+    for i in list_index_bw:
+        loaded_images[i] = np.stack((loaded_images[i],)*3, axis=-1)
+
 
     X = np.array(loaded_images)
     with open("data/X.pkl", "wb") as fp:   #Pickling

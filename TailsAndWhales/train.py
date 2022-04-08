@@ -13,9 +13,9 @@ import pickle
 def load_data():
 # Use the following method to load X and y
 
-    with open('raw_data/X.pickle', 'rb') as handle: # A voir si le chemin fonctionne.
+    with open('data/X_10.pkl', 'rb') as handle: # A voir si le chemin fonctionne.
     X = pickle.load(handle)
-    with open('raw_data/y.pickle', 'rb') as handle: # A voir si le chemin fonctionne.
+    with open('data/y_10.pkl', 'rb') as handle: # A voir si le chemin fonctionne.
     y = pickle.load(handle)
 
     return X, y

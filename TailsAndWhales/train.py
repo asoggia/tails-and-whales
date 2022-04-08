@@ -13,19 +13,19 @@ import pickle
 def load_data():
 # Use the following method to load X and y
 
-    with open('data/X_10.pkl', 'rb') as handle: # A voir si le chemin fonctionne.
-    X = pickle.load(handle)
-    with open('data/y_10.pkl', 'rb') as handle: # A voir si le chemin fonctionne.
-    y = pickle.load(handle)
+    with open('X_10.pkl', 'rb') as handle: # A voir si le chemin fonctionne.
+        X = pickle.load(handle)
+    with open('y_10.pkl', 'rb') as handle: # A voir si le chemin fonctionne.
+        y = pickle.load(handle)
 
     return X, y
 
 #### code for jupyter noteb: X, y = load_data()
 
-def train_val_test_split(X, y)
+def train_val_test_split(X, y):
 # Use the following method to create X_train, y_train, X_val, y_val, X_test, y_test
 
-    first_split = int(X.shape[0]) /6.)
+    first_split = int(X.shape[0] /6.)
     second_split = first_split + int(X.shape[0] * 0.2)
     X_test, X_val, X_train = X[:first_split], X[first_split:second_split], X[second_split:]
     y_test, y_val, y_train = y[:first_split], y[first_split:second_split], y[second_split:]

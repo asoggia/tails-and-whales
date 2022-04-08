@@ -12,12 +12,12 @@ from google.colab import auth
 def create_X_y(number_of_photos):
     # load and make changes to csv
     auth.authenticate_user()
-    !echo "deb http://packages.cloud.google.com/apt gcsfuse-bionic main" > /etc/apt/sources.list.d/gcsfuse.list
-    !curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-    !apt -qq update
-    !apt -qq install gcsfuse
-    !mkdir tails-and-whales
-    !gcsfuse tails-and-whales tails-and-whales
+    echo "deb http://packages.cloud.google.com/apt gcsfuse-bionic main" > /etc/apt/sources.list.d/gcsfuse.list
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+    apt -qq update
+    apt -qq install gcsfuse
+    mkdir tails-and-whales
+    gcsfuse tails-and-whales tails-and-whales
     path = 'tails-and-whales/train_kaggle.csv'
     data = pd.read_csv(path)
     data['speciesv2'] = data['species']
@@ -48,8 +48,8 @@ def create_X_y(number_of_photos):
             list_len.append(len(img.shape))
 
     X = np.array(loaded_images)
-    with open("raw-data/X.pkl", "wb") as fp:   #Pickling
-    pickle.dump(X, fp)
+    with open("data/X.pkl", "wb") as fp:   #Pickling
+        pickle.dump(X, fp)
 
     # create and save y in raw_data/y.pkl
     classes = {'whale':0, 'dolphin':1, 'beluga':2}
@@ -57,7 +57,7 @@ def create_X_y(number_of_photos):
     data['class'] = data['speciesv2'].map(classes)
     num_classes = 3
     y = to_categorical(data['class'][:number_of_photos], num_classes=num_classes)
-    with open("y.pkl", "wb") as fp:   #Pickling
-    pickle.dump(y, fp)
+    with open("data/y.pkl", "wb") as fp:   #Pickling
+        pickle.dump(y, fp)
 
     print("X and y are saved ! Well Done !")

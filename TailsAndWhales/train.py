@@ -2,13 +2,25 @@ from tensorflow.keras.applications.vgg16 import VGG16 #vgg16
 from tensorflow.keras.applications.resnet import ResNet101 #resnet101
 from tensorflow.keras.applications.mobilenet_v2 import MobileNetV2 #mobilenetv2
 from tensorflow.keras.applications.vgg16 import preprocess_input
+from tensorflow.keras.callbacks import EarlyStopping
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
 from tensorflow.keras import layers, models
 from tensorflow.keras import optimizers
 import numpy as np
-# need to import the file with the fct returning the X, y
+import pickle
 
 def load_data():
+# Use the following method to load X and y
 
+    with open('raw_data/X.pickle', 'rb') as handle: # A voir si le chemin fonctionne.
+    X = pickle.load(handle)
+    with open('raw_data/y.pickle', 'rb') as handle: # A voir si le chemin fonctionne.
+    y = pickle.load(handle)
+
+    return X, y
+
+#### code for jupyter noteb: X, y = load_data()
 
 def train_val_test_split(X, y)
 # Use the following method to create X_train, y_train, X_val, y_val, X_test, y_test
@@ -51,7 +63,7 @@ def set_trainable_layers(model, train = False):
     # Set the last layers to be trainable
         model.trainable = True
     # Fine-tune from this layer onwards
-        retrain_layers = int(input('How many layer(s) would you like to re-train? "))
+        retrain_layers = int(input('How many layer(s) would you like to re-train? '))
         fine_tune_at = len(model.layers) - retrain_layers
     # Freeze all the layers before the `fine_tune_at` layer
         for layer in model.layers[:fine_tune_at]:
@@ -101,12 +113,58 @@ def compile_model(model):
 
     return model
 
-#### code for jupyter noteb: compile_model(model)
+#### code for jupyter noteb: model = compile_model(model)
 
 
 def normalize_data(X_test, X_val, X_train):
 # use the following method to normalize X using preprocess_input of
 # the VGG16 pre-trained model (need to modify this fct if we use a different model)
+
     X_train = preprocess_input(X_train)
     X_val = preprocess_input(X_val)
     X_test = preprocess_input(X_test)
+
+    return X_train, X_val, X_test
+
+#### code for jupyter noteb: X_train, X_val, X_test = normalize_data(X_test, X_val, X_train)
+
+
+def train_model(model, X_train, y_train, X_val, y_val):
+# use the following method to train the model
+
+    es = EarlyStopping(monitor = 'val_loss', #>>> we can change this!
+                   mode = 'auto', #>>> depends on what is being monitored!
+                   patience = 5,
+                   verbose = 1,
+                   restore_best_weights = True)
+
+    history = model.fit(X_train, y_train,
+                    validation_data=(X_val, y_val),
+                    epochs=50,
+                    batch_size=16,
+                    callbacks=[es])
+
+    return history, model
+
+#### code for jupyter noteb: history = train_model(X_train, y_train, X_val, y_val)
+
+
+def evaluate_model(model, X_test, y_test):
+# use the following method to evalutate the model
+
+    res_vgg = model.evaluate(X_test, y_test)
+    test_accuracy_vgg = res_vgg[-1]
+    print(res_vgg)
+    print(f"test_accuracy_vgg = {round(test_accuracy_vgg,2)*100} %")
+
+#### code for jupyter noteb: evaluate_model(model, X_test, y_test)
+
+
+def predict_model(model, X_test, y_test):
+# use the following method to print the confusion matrix
+
+    y_pred = model.predict(X_test, verbose=1)
+    print(confusion_matrix(y_true = np.argmax(y_test, axis=1), y_pred = np.argmax(y_pred, axis=1)))
+    print(classification_report(np.argmax(y_test, axis=1), np.argmax(y_pred, axis=1), target_names = ['whale', 'dolphin', 'beluga'], digits=3))
+
+#### code for jupyter noteb: predict_model(model, X_test, y_test)

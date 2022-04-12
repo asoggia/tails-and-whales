@@ -53,3 +53,10 @@ pypi_test:
 
 pypi:
 	@twine upload dist/* -u $(PYPI_USERNAME)
+
+PROJECT_ID = earnest-vine-341415
+
+BUCKET_NAME = tails-and-whales
+
+run_api:
+	@uvicorn api.fast:app --reload  # load web server with code autoreload

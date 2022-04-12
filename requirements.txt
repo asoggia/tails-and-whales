@@ -31,3 +31,6 @@ termcolor
 opencv-python
 google
 matplotlib
+
+uvicorn
+fastapi
